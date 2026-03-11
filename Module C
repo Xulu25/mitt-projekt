@@ -1,1 +1,485 @@
+/// Dealership
+#include "Dealership.h"
+
+Dealership::Dealership(string name)
+{
+    this->name = name;
+}
+
+string Dealership::setName(string name)
+{
+    return this->name = name;
+}
+
+string Dealership::getName() const
+{
+    return this->name;
+}
+
+int Dealership::getNrOfVehicles() const
+{
+    return this->ptrVehicle.size();
+}
+
+Dealership::Dealership(const Dealership& other)
+{
+    this->name = other.name;
+
+    for (int i = 0; i < other.ptrVehicle.size(); i++) {
+
+        this->ptrVehicle.push_back(other.ptrVehicle[i]->clone());
+    }
+}
+
+void Dealership::operator=(const Dealership& other)
+{
+    this->name = other.name;
+    this->ptrVehicle.clear();
+
+    for (size_t i = 0; i < other.ptrVehicle.size(); i++)
+    {
+        this->ptrVehicle.push_back(other.ptrVehicle[i]->clone());
+    }
+}
+
+bool Dealership::addCar(string manufacturer, string model, string registrationNumber, int manufacturingYear, int numDoors, bool hasAirConditioning)
+{
+    for (int i = 0; i < ptrVehicle.size(); i++) {
+
+        if (ptrVehicle[i]->getRegistrationNumber() == registrationNumber) {
+            return false;
+        }
+    }
+    unique_ptr<Car> tempCar = make_unique<Car>(manufacturer, model, registrationNumber, manufacturingYear, numDoors, hasAirConditioning);
+    ptrVehicle.push_back(move(tempCar));
+    return true;
+}
+
+bool Dealership::addMotorcycle(string manufacturer, string model, string registrationNumber, int manufacturingYear, int numWheels, int cubicCentimeters)
+{
+    for (int i = 0; i < ptrVehicle.size(); i++) {
+
+        if (ptrVehicle[i]->getRegistrationNumber() == registrationNumber) {
+            return false;
+        }
+    }
+    unique_ptr<Motorcycle> tempMotorcycle = make_unique<Motorcycle>(manufacturer, model, registrationNumber, manufacturingYear, numWheels, cubicCentimeters);
+    ptrVehicle.push_back(move(tempMotorcycle));
+    return true;
+}
+
+string Dealership::getAllCarDescriptions()
+{
+    string final = "";
+    for (int i = 0; i < ptrVehicle.size(); i++) {
+
+        if (Car* tempCar = dynamic_cast<Car*>(ptrVehicle[i].get())) {
+            
+            final += tempCar->getDescription();
+        }
+    }
+    return final;
+}
+
+string Dealership::getAllMotorcycleDescriptions()
+{
+    string final = "";
+    
+    for (int i = 0; i < ptrVehicle.size(); i++) {
+
+        if (Motorcycle* tempMotorcycle = dynamic_cast<Motorcycle*>(ptrVehicle[i].get())) {
+
+            final += tempMotorcycle->getDescription();
+        }
+    }
+    return final;
+}
+
+string Dealership::getAllDescriptions()
+{
+    string final = "";
+
+    for (int i = 0; i < ptrVehicle.size(); i++) {
+
+        final += ptrVehicle[i]->getDescription();
+    }
+    return final;
+}
+
+int Dealership::getNumberOfCarsWithAirConditioning()
+{
+    int counter = 0;
+    for (int i = 0; i < ptrVehicle.size(); i++) {
+
+        if (Car* car = dynamic_cast<Car*>(ptrVehicle[i].get())) {
+
+            if (car->getHasAirConditioning()) {
+                counter++;
+            }
+         
+        }
+    }
+    return counter;
+}
+
+int Dealership::getNumberOfMotorcyclesWithCubicCentimetersLargerThan(int cubicCentimeters)
+{
+    int counter = 0;
+
+    for (int i = 0; i < ptrVehicle.size(); i++) {
+
+        if (Motorcycle * motorcycle = dynamic_cast<Motorcycle*>(ptrVehicle[i].get())) {
+
+            if (motorcycle->getCubicCentimeters() > cubicCentimeters) {
+                counter++;
+            }
+        }
+    }
+    return counter;
+}
+
+Vehicle* Dealership::getVehicleAt(int index)
+{
+    if (index >= ptrVehicle.size()) {
+        return nullptr;
+    }
+    return ptrVehicle[index].get();
+}
+
+void Dealership::removeAllVehiclesOfManufacturerAndYear(string manufacturer, int manufacturingYear)
+{
+    for (int i = ptrVehicle.size() - 1; i >= 0; i--) {
+
+        if (ptrVehicle[i]->getManufacturer() == manufacturer &&
+            ptrVehicle[i]->getManufacturingYear() == manufacturingYear) {
+
+            ptrVehicle.erase(ptrVehicle.begin() + i);
+        }
+    }
+}
+
+bool Dealership::removeVehicle(string registrationNumber)
+{
+    for (int i = 0; i < ptrVehicle.size(); i++) {
+
+        if (ptrVehicle[i]->getRegistrationNumber() == registrationNumber) {
+
+            ptrVehicle[i] = move(ptrVehicle[ptrVehicle.size() - 1]);
+            ptrVehicle.pop_back();
+            return true;
+        }
+    }
+    return false;
+}
+/////
+
+/// Dealership.h
+
+#pragma once
+#include "Vehicle.h"
+#include "Car.h"
+#include "Motorcycle.h"
+#include <vector>
+#include <memory>
+
+class Dealership
+{
+private:
+	string name;
+	vector<unique_ptr<Vehicle>> ptrVehicle;
+
+public:
+	Dealership() = default;
+	Dealership(string name);
+	~Dealership() = default;
+
+	string setName(string name);
+	string getName() const;
+	int getNrOfVehicles() const;
+
+	Dealership(const Dealership& other);
+	void operator=(const Dealership& other);
+
+	bool addCar(string manufacturer, string model, string registrationNumber, int manufacturingYear, int numDoors, bool hasAirConditioning);
+	bool addMotorcycle(string manufacturer, string model, string registrationNumber, int manufacturingYear, int numWheels, int cubicCentimeters);
+	
+	string getAllCarDescriptions();
+	string getAllMotorcycleDescriptions();
+	string getAllDescriptions();
+	int getNumberOfCarsWithAirConditioning();
+	int getNumberOfMotorcyclesWithCubicCentimetersLargerThan(int cubicCentimeters);
+	Vehicle* getVehicleAt(int index);
+
+	void removeAllVehiclesOfManufacturerAndYear(string manufacturer, int manufacturingYear);
+	bool removeVehicle(string registrationNumber);
+
+};
+
+///
+
+Vehicle.cpp //
+#include "Vehicle.h"
+
+Vehicle::Vehicle()
+{
+    this->manufacturer = "";
+    this->model = "";
+    this->registrationNumber = "";
+    this->manufacturingYear = 0;
+}
+
+Vehicle::Vehicle(std::string manufacturer, std::string model, std::string registrationNumber, int manufacturingYear)
+{
+    this->manufacturer = manufacturer;
+    this->model = model;
+    this->registrationNumber = registrationNumber;
+	this->manufacturingYear = manufacturingYear;   
+}
+
+Vehicle::~Vehicle()
+{
+}
+
+string Vehicle::setManufacturer(string manufacturer)
+{
+    return this->manufacturer = manufacturer;
+}
+
+string Vehicle::setModel(string model)
+{
+    return this->model = model;
+}
+
+string Vehicle::setRegistrationNumber(string registrationNumber)
+{
+    return this->registrationNumber = registrationNumber;
+}
+
+int Vehicle::setManufacturingYear(int manufacturingYear)
+{
+    return this->manufacturingYear = manufacturingYear;
+}
+
+string Vehicle::getManufacturer() const
+{
+    return this->manufacturer;
+}
+
+string Vehicle::getModel() const
+{
+    return this->model;
+}
+
+string Vehicle::getRegistrationNumber() const
+{
+    return this->registrationNumber;
+}
+
+int Vehicle::getManufacturingYear() const
+{
+    return this->manufacturingYear;
+}
+///
+
+Vehicle.h ///
+#pragma once
+#include <vector>
+#include <string>
+#include <memory>
+using namespace std;
+
+class Vehicle
+{
+private:
+	string manufacturer;
+	string model;
+	string registrationNumber;
+	int manufacturingYear;
+
+public:
+	Vehicle();
+	Vehicle(string manufacturer, string model, string registrationNumber, int manufacturingYear);
+	virtual ~Vehicle();
+
+	string setManufacturer(string manufacturer);
+	string setModel(string model);
+	string setRegistrationNumber(string registrationNumber);
+	int setManufacturingYear(int manufactureringYear);
+
+	string getManufacturer() const;
+	string getModel() const;
+	string getRegistrationNumber() const;
+	int getManufacturingYear() const;
+
+	virtual string getDescription() = 0;
+	virtual unique_ptr<Vehicle> clone() = 0;
+};
+
+///
+
+Car.h ///
+#pragma once
+#include "Vehicle.h"
+
+class Car : public Vehicle
+{
+private:
+	int numDoors;
+	bool hasAirConditioning;
+
+public:
+	Car();
+	Car(string manufacturer, string model, string registrationNumber, int manufacturingYear, int numDoors, bool hasAirConditioning);
+	~Car();
+
+	int setNumDoors(int numDoors);
+	bool setHasAirConditioning(bool hasAirConditioning);
+
+	int getNumDoors() const;
+	bool getHasAirConditioning() const;
+
+	string getDescription() override;
+	unique_ptr<Vehicle> clone() override;
+};
+
+Car.cpp ///
+#include "Car.h"
+
+Car::Car()
+{
+    this->numDoors = 0;
+    this->hasAirConditioning = 0;
+}
+
+Car::Car(string manufacturer, string model, string registrationNumber, int manufacturingYear, int numDoors, bool hasAirConditioning)
+{
+    this->setManufacturer(manufacturer);
+    this->setModel(model);
+    this->setRegistrationNumber(registrationNumber);
+    this->setManufacturingYear(manufacturingYear);
+    this->numDoors = numDoors;
+    this->hasAirConditioning = hasAirConditioning;
+}
+
+Car::~Car()
+{
+}
+
+int Car::setNumDoors(int numDoors)
+{
+    return this->numDoors = numDoors;
+}
+
+bool Car::setHasAirConditioning(bool hasAirConditioning)
+{
+    return this->hasAirConditioning = hasAirConditioning;
+}
+
+int Car::getNumDoors() const
+{
+    return this->numDoors;
+}
+
+bool Car::getHasAirConditioning() const
+{
+    return this->hasAirConditioning;
+}
+
+string Car::getDescription()
+{
+    return getManufacturer() + getModel() + getRegistrationNumber() +
+        to_string(getManufacturingYear()) + to_string(getNumDoors()) + to_string(getHasAirConditioning());
+}
+
+unique_ptr<Vehicle> Car::clone()
+{
+    return make_unique<Car>(*this);
+}
+
+Motorcycle.h //
+#pragma once
+#include "Vehicle.h"
+
+class Motorcycle : public Vehicle
+{
+private:
+	int numWheels;
+	int cubicCentimeters;
+
+public:
+	Motorcycle();
+	Motorcycle(string manufacturer, string model, string registrationNumber, int manufacturingYear, int numWheels, int cubicCentimeters);
+	~Motorcycle();
+
+	int setNumWheels(int numWheels);
+	int setCubicCentimeters(int cubicCentimeters);
+
+	int getNumWheels() const;
+	int getCubicCentimeters() const;
+
+	string getDescription() override;
+	unique_ptr<Vehicle> clone() override;
+};
+
+/// Motorcycle.cpp:
+
+#include "Motorcycle.h"
+
+Motorcycle::Motorcycle()
+{
+    this->numWheels = 0;
+    this->cubicCentimeters = 0;
+}
+
+Motorcycle::Motorcycle(string manufacturer, string model, string registrationNumber, int manufacturingYear, int numWheels, int cubicCentimeters)
+{
+    this->setManufacturer(manufacturer);
+    this->setModel(model);
+    this->setRegistrationNumber(registrationNumber);
+    this->setManufacturingYear(manufacturingYear);
+    this->numWheels = numWheels;
+    this->cubicCentimeters = cubicCentimeters;
+}
+
+Motorcycle::~Motorcycle()
+{
+}
+
+int Motorcycle::setNumWheels(int numWheels)
+{
+    return this->numWheels = numWheels ;
+}
+
+int Motorcycle::setCubicCentimeters(int cubicCentimeters)
+{
+    return this->cubicCentimeters = cubicCentimeters;
+}
+
+int Motorcycle::getNumWheels() const
+{
+    return this->numWheels;
+}
+
+int Motorcycle::getCubicCentimeters() const
+{
+    return this->cubicCentimeters;
+}
+
+string Motorcycle::getDescription()
+{
+    return getManufacturer() + getModel() + getRegistrationNumber() + to_string(getManufacturingYear()) +
+        to_string(getNumWheels()) + to_string(getCubicCentimeters());
+}
+
+unique_ptr<Vehicle> Motorcycle::clone()
+{
+    return make_unique<Motorcycle>(*this);
+}
+
+
+
+
+
+
+
 

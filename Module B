@@ -257,3 +257,20 @@ bool ShoppingCart::removeProduct(string name, int price, int quantity)
 	}
 	return true;
 }
+
+----SISTA MED RATING---
+int MovieCollection::getNrOfMoviesHigherRatedThan(const Movie& movie)
+{
+    int counter = 0;
+
+    for (int i = 0; i < nrOfMovies; i++) {
+
+        if (movie < *ptrMovie[i]) {
+            counter++;
+        }
+        //if (ptrMovie[i]->getRating() > movie.getRating()) {
+        //    counter++;
+        //}
+    }
+    return counter;
+}

@@ -1,0 +1,259 @@
+static const int CAP = 10;
+Book* ptrBook[CAP] = { nullptr };
+
+void setAuthor(string author);
+
+bool operator<(const Book& other);
+bool operator==(const Book& other);
+
+Book.cpp
+Book::Book(string author, string title, int year)
+{
+	this->author = author;
+	this->title = title;
+
+	if (year <= 2025) {
+		this->year = year;
+	}
+	else {
+		this->year = 0;
+	}
+}
+
+bool Book::operator==(const Book& other)
+{
+	return this->author == other.author && this->title == other.title &&
+		this->year == other.year;
+}
+
+void Book::setYear(int year)
+{
+	if (year <= 2025) {
+		this->year = year;
+	}
+}
+
+BookStore::BookStore()
+{
+	this->name = "";
+	this->currentNrOfBooks = 0;
+}
+
+BookStore::BookStore(string name)
+{
+	this->name = name;
+	this->currentNrOfBooks = 0;
+}
+
+BookStore::~BookStore()
+{
+	for (int i = 0; i < currentNrOfBooks; i++) {
+		delete ptrBook[i];
+		ptrBook[i] = nullptr;
+	}
+}
+
+-----ENKEL VERSION-----
+bool BookStore::addBook(string author, string title, int year)
+{
+	if (getCurrentNrOfBooks() >= CAP) {
+		return false;
+	}
+	Book* temp = new Book(author, title, year);
+	ptrBook[currentNrOfBooks] = temp;
+	currentNrOfBooks++;
+	return true;
+}
+
+bool BookStore::removeBook(string author, string title, int year)
+{
+	for (int i = 0; i < currentNrOfBooks; i++) {
+
+		if (ptrBook[i]->getAuthor() == author &&
+			ptrBook[i]->getTitle() == title &&
+			ptrBook[i]->getYear() == year) {
+
+			delete ptrBook[i];
+			ptrBook[i] = ptrBook[currentNrOfBooks - 1];
+			ptrBook[currentNrOfBooks - 1] = nullptr;
+			currentNrOfBooks--;
+			return true;
+		}
+	}
+	return false;
+}
+
+int BookStore::nrOfBooksByAuthorAndTitle(string author, string title)
+{
+	int counter = 0;
+	for (int i = 0; i < currentNrOfBooks; i++) {
+		
+		if (ptrBook[i]->getAuthor() == author &&
+			ptrBook[i]->getTitle() == title) {
+			counter++;
+		}
+	}
+	return counter;
+}
+
+-----MEDEL VERSION-----
+
+Funktionen getNrOfEmployeesYoungerThan (…) ska returnera antal anställda som
+är yngre än en angiven anställd.
+
+int getNrOfEmployeesYoungerThan(Employee& otherEmployee);
+
+bool Company::addEmployee(int employeeNumber, string firstName, string surname, int birthYear)
+{
+	if (getNrOfEmployees() >= MAX) {
+		return false;
+	}
+	if (getEmployeeIndexFor(employeeNumber) != -1) {
+		return false;
+	}
+	Employee* tempEmp = new Employee(employeeNumber, firstName, surname, birthYear);
+	ptrEmployee[nrOfEmployees] = tempEmp;
+	nrOfEmployees++;
+	return true;
+}
+
+int Company::getEmployeeIndexFor(int employeeNumber)
+{
+	for (int i = 0; i < nrOfEmployees; i++) {
+		if (ptrEmployee[i]->getEmployeeNumber() == employeeNumber) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+bool Company::removeEmployee(int employeeNumber)
+{
+	for (int i = 0; i < nrOfEmployees; i++) {
+		if (ptrEmployee[i]->getEmployeeNumber() == employeeNumber) {
+			delete ptrEmployee[i];
+
+			ptrEmployee[i] = ptrEmployee[nrOfEmployees - 1];
+			ptrEmployee[nrOfEmployees - 1] = nullptr;
+			nrOfEmployees--;
+			return true;
+		}
+	}
+	return false;
+}
+
+int Company::getNrOfEmployeesYoungerThan(Employee& otherEmployee)
+{
+	int counter = 0;
+	for (int i = 0; i < nrOfEmployees; i++) {
+		if (*ptrEmployee[i] < otherEmployee) {
+			counter++;
+		}
+	}
+	return counter;
+}
+
+Employee* Company::getEmployeeAt(int index)
+{
+	if (index >= 0 && index < nrOfEmployees) {
+		return ptrEmployee[index];
+	}
+	return nullptr;
+}
+
+------SVÅR VERSION------
+Funktionen increaseQuantityBy() ska öka kvantitetet med angivet argument.
+void Product::increaseQuantityBy(int quantity)
+{
+	this->quantity += quantity;
+}
+
+Funktionen decreaseQuantityBy() ska minska kvantitetet med angivet argument om möjligt. 
+Om uppdateringen lyckas returneras true. Om det inte går att minska med angiven kvantitet, 
+så ändras inte produktens kvantitet och funktionen returnerar false.
+
+bool Product::decreaseQuantityBy(int quantity)
+{
+	if (this->quantity < quantity) {
+		return false;
+	}
+	else {
+		this->quantity -= quantity;
+		return true;
+	}
+}
+
+Funktionen totalPrice() ska returnera totala priset för alla produkter i varuvagnen.
+int ShoppingCart::totalPrice()
+{
+	int total = 0;
+
+	for (int i = 0; i < nrOfProducts; i++) {
+		total += ptrProduct[i]->getTotalPrice();
+	}
+	return total;
+}
+
+Funktionen getIndexForProduct(…) ska returnera index i arrayen för produkten med angivet namn och pris, 
+eller värdet -1 om produkten inte hittas.
+
+int ShoppingCart::getIndexForProduct(string name, int price)
+{
+	for (int i = 0; i < nrOfProducts; i++) {
+
+		if (ptrProduct[i]->getName() == name &&
+			ptrProduct[i]->getPrice() == price) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+Vid tillägg av produkter, via funktionen addProduct() gäller följande regler:
+Om produktlistan är full returneras false, annars true.
+Om produkten redan finns i listan så ökas dess kvantitet med angiven kvantitet.
+Annars skapas en ny produkt och läggs till i listan av produkter.
+
+bool ShoppingCart::addProduct(string name, int price, int quantity)
+{
+	int index = getIndexForProduct(name, price);
+
+	if (getNrOfProducts() >= CAP) {
+		return false;
+	}
+	if (index != -1) {
+
+		ptrProduct[index]->increaseQuantityBy(quantity);
+		return true;
+	}
+
+	Product* temp = new Product(name, price, quantity);
+	ptrProduct[nrOfProducts] = temp;
+	nrOfProducts++;
+	return true;
+}
+
+Vid borttagning av produkter, via funktionen removeProduct() gäller följande regler:
+Om produkten inte finns i produktlistan, eller det inte går att räkna ner kvantiteten, så returneras false annars true.
+Annars räknas kvantiteten för befintlig produkt ner med angiven kvantitet.
+Om kvarvarande kvantitet blir noll tas produkten bort ur listan.
+För att undvika ”hål” i listan så ska det borttagna objektet ersättas med det sista objektet.
+
+bool ShoppingCart::removeProduct(string name, int price, int quantity)
+{
+	int index = getIndexForProduct(name, price);
+
+	if (index == -1) {
+		return false;
+	}
+	if (!ptrProduct[index]->decreaseQuantityBy(quantity)) {
+		return false;
+	}
+	if (ptrProduct[index]->getQuantity() == 0) {
+		delete ptrProduct[index];
+		ptrProduct[index] = ptrProduct[nrOfProducts - 1];
+		ptrProduct[nrOfProducts - 1] = nullptr;
+		nrOfProducts--;
+	}
+	return true;
+}

@@ -1,0 +1,439 @@
+#include "SimpleQuestion.h"
+#include "TrueFalseQuestion.h"
+
+#include <iostream>
+
+using namespace std;
+
+bool TestingSimpleQuestionInitial()
+{
+	std::cout << std::endl << "Starting TestingSimpleQuestionInitial()" << std::endl;
+	std::cout << "  Testing default constructor and getters" << std::endl;
+
+	SimpleQuestion aSimpleQuestion;
+
+	if (aSimpleQuestion.getQuestion() != "")
+	{
+		std::cout << "NOT CORRECT 1: question, expected \"\" but got " << aSimpleQuestion.getQuestion() << std::endl;
+		return false;
+	}
+	if (aSimpleQuestion.getCorrectAnswer() != "")
+	{
+		std::cout << "NOT CORRECT 2: correctAnswer, expected  \"\" but got " << aSimpleQuestion.getCorrectAnswer() << std::endl;
+		return false;
+	}
+	if (aSimpleQuestion.getGivenAnswer() != "")
+	{
+		std::cout << "NOT CORRECT 3: givenAnswer, expected  \"\" but got " << aSimpleQuestion.getGivenAnswer() << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestingSimpleQuestionInitial()" << std::endl;
+	return true;
+}
+
+bool TestingSimpleQuestionValues()
+{
+	std::cout << std::endl << "Starting TestingSimpleQuestionValues()" << std::endl;
+	std::cout << "  Testing default constructor, overloaded constructor, setters, and getters" << std::endl;
+
+	SimpleQuestion aSimpleQuestion;
+
+	const string expectedQuestion = "Huvudstaden i Norge?";
+	string expectedAnswer = "Oslo";
+	string expectedGivenAnswer = "Oslo";
+
+	aSimpleQuestion.setQuestion(expectedQuestion);
+	aSimpleQuestion.setCorrectAnswer(expectedAnswer);
+	aSimpleQuestion.setGivenAnswer(expectedGivenAnswer);
+
+	string what, expected;
+
+	what = "question";
+	expected = expectedQuestion;
+	if (aSimpleQuestion.getQuestion() != expected)
+	{
+		std::cout << "NOT CORRECT 1: testing set/get " << what << ", expected " << expected \
+			<< ", but got " << aSimpleQuestion.getQuestion() << std::endl;
+		return false;
+	}
+	what = "correctAnswer";
+	expected = expectedAnswer;
+	if (aSimpleQuestion.getCorrectAnswer() != expected)
+	{
+		std::cout << "NOT CORRECT 2: testing set/get " << what << ", expected " << expected \
+			<< ", but got " << aSimpleQuestion.getCorrectAnswer() << std::endl;
+		return false;
+	}
+	what = "givenAnswer";
+	expected = expectedGivenAnswer;
+	if (aSimpleQuestion.getGivenAnswer() != expected)
+	{
+		std::cout << "NOT CORRECT 3: testing set/get " << what << ", expected " << expected \
+			<< ", but got " << aSimpleQuestion.getGivenAnswer() << std::endl;
+		return false;
+	}
+
+	// Testing overloaded constructor
+	SimpleQuestion secondSimpleQuestion(expectedQuestion, expectedAnswer);
+	secondSimpleQuestion.setGivenAnswer(expectedGivenAnswer);
+
+	what = "question";
+	expected = expectedQuestion;
+	if (secondSimpleQuestion.getQuestion() != expected)
+	{
+		std::cout << "NOT CORRECT 4: testing overloaded constructor, get " << what << ", expected " << expected \
+			<< ", but got " << secondSimpleQuestion.getQuestion() << std::endl;
+		return false;
+	}
+	what = "correctAnswer";
+	expected = expectedAnswer;
+	if (secondSimpleQuestion.getCorrectAnswer() != expected)
+	{
+		std::cout << "NOT CORRECT 5: testing overloaded constructor, get " << what << ", expected " << expected \
+			<< ", but got " << secondSimpleQuestion.getCorrectAnswer() << std::endl;
+		return false;
+	}
+	what = "givenAnswer";
+	expected = expectedGivenAnswer;
+	if (secondSimpleQuestion.getGivenAnswer() != expected)
+	{
+		std::cout << "NOT CORRECT 6: testing overloaded constructor, get " << what << ", expected " << expected \
+			<< ", but got " << secondSimpleQuestion.getGivenAnswer() << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestingSimpleQuestionValues()" << std::endl;
+	return true;
+}
+
+bool TestingTrueFalseQuestionInitial()
+{
+	std::cout << std::endl << "Starting TestingTrueFalseQuestionInitial()" << std::endl;
+	std::cout << "  Testing default constructor and getters" << std::endl;
+
+	TrueFalseQuestion aTrueFalseQuestion;
+
+	if (aTrueFalseQuestion.getQuestion() != "")
+	{
+		std::cout << "NOT CORRECT 1: question, expected \"\" but got " << aTrueFalseQuestion.getQuestion() << std::endl;
+		return false;
+	}
+	if (aTrueFalseQuestion.getCorrectAnswer() != "True" && aTrueFalseQuestion.getCorrectAnswer() != "Sant")
+	{
+		std::cout << "NOT CORRECT 2: correctAnswer, expected \"True\" or \"Sant\" but got " << aTrueFalseQuestion.getCorrectAnswer() << std::endl;
+		return false;
+	}
+	if (aTrueFalseQuestion.getGivenAnswer() != "")
+	{
+		std::cout << "NOT CORRECT 3: givenAnswer, expected  \"\" but got " << aTrueFalseQuestion.getGivenAnswer() << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestingTrueFalseQuestionInitial()" << std::endl;
+	return true;
+}
+
+bool TestingTrueFalseQuestionValues()
+{
+	std::cout << std::endl << "Starting TestingTrueFalseQuestionValues()" << std::endl;
+	std::cout << "  Testing default constructor, overloaded constructor, setters, and getters" << std::endl;
+
+	TrueFalseQuestion aTrueFalseQuestion;
+
+	const string expectedQuestion = "Oslo är huvudstad i Norge";
+	bool expectedAnswer = true;
+	bool expectedGivenAnswer = true;
+
+	aTrueFalseQuestion.setQuestion(expectedQuestion);
+	aTrueFalseQuestion.setCorrectAnswer(expectedAnswer);
+	aTrueFalseQuestion.setGivenAnswer(expectedGivenAnswer);
+
+	string what, expected;
+
+	what = "question";
+	expected = expectedQuestion;
+	if (aTrueFalseQuestion.getQuestion() != expected)
+	{
+		std::cout << "NOT CORRECT 1: testing set/get " << what << ", expected " << expected \
+			<< ", but got " << aTrueFalseQuestion.getQuestion() << std::endl;
+		return false;
+	}
+	what = "correctAnswer";
+	expected = expectedAnswer;
+	if (aTrueFalseQuestion.getCorrectAnswer() != "True" && aTrueFalseQuestion.getCorrectAnswer() != "Sant")
+	{
+		std::cout << "NOT CORRECT 2: testing set/get " << what << ", expected \"True\" or \"Sant\" but got "
+			<< aTrueFalseQuestion.getCorrectAnswer() << std::endl;
+		return false;
+	}
+	what = "givenAnswer";
+	expected = expectedGivenAnswer;
+	if (aTrueFalseQuestion.getGivenAnswer() != "True" && aTrueFalseQuestion.getGivenAnswer() != "Sant")
+	{
+		std::cout << "NOT CORRECT 3: testing set/get " << what << ", expected \"True\" or \"Sant\" but got "
+			<< aTrueFalseQuestion.getGivenAnswer() << std::endl;
+		return false;
+	}
+
+	// Testing overloaded constructor
+	TrueFalseQuestion secondTrueFalseQuestion(expectedQuestion, expectedAnswer);
+	secondTrueFalseQuestion.setGivenAnswer(expectedGivenAnswer);
+
+	what = "question";
+	expected = expectedQuestion;
+	if (secondTrueFalseQuestion.getQuestion() != expected)
+	{
+		std::cout << "NOT CORRECT 4: testing overloaded constructor, get " << what << ", expected " << expected \
+			<< ", but got " << secondTrueFalseQuestion.getQuestion() << std::endl;
+		return false;
+	}
+	what = "correctAnswer";
+	expected = expectedAnswer;
+	if (secondTrueFalseQuestion.getCorrectAnswer() != "True" && secondTrueFalseQuestion.getCorrectAnswer() != "Sant")
+	{
+		std::cout << "NOT CORRECT 5: testing set/get " << what << ", expected \"True\" or \"Sant\" but got "
+			<< secondTrueFalseQuestion.getCorrectAnswer() << std::endl;
+		return false;
+	}
+	what = "givenAnswer";
+	expected = expectedGivenAnswer;
+	if (secondTrueFalseQuestion.getGivenAnswer() != "True" && secondTrueFalseQuestion.getGivenAnswer() != "Sant")
+	{
+		std::cout << "NOT CORRECT 6: testing set/get " << what << ", expected \"True\" or \"Sant\" but got "
+			<< secondTrueFalseQuestion.getGivenAnswer() << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestingTrueFalseQuestionValues()" << std::endl;
+	return true;
+}
+
+bool TestingSimpleQuestionInheritance()
+{
+	std::cout << std::endl << "Starting TestingSimpleQuestionInheritance()" << std::endl;
+	std::cout << "  Testing using base class pointers and various functionality." << std::endl;
+
+	Question* aQuestion = new SimpleQuestion("SimpleQuestion", "SimpleQuestion answer");
+
+	string what = "isAnswered";
+	if (aQuestion->isAnswered() != false)
+	{
+		std::cout << "NOT CORRECT 1: testing " << what << ", expected false, but got true" << std::endl;
+		return false;
+	}
+	what = "isCorrect";
+	if (aQuestion->isCorrect() != false)
+	{
+		std::cout << "NOT CORRECT 2: testing " << what << ", expected false, but got true" << std::endl;
+		return false;
+	}
+	what = "getGivenAnswer";
+	string expected = "";
+	if (aQuestion->getGivenAnswer() != expected)
+	{
+		std::cout << "NOT CORRECT 3: testing " << what << ", expected " << expected
+			<< ", but got " << aQuestion->getGivenAnswer() << std::endl;
+		return false;
+	}
+
+	// Set correct answer
+	SimpleQuestion* theSimpleQuestion = dynamic_cast<SimpleQuestion*>(aQuestion);
+	theSimpleQuestion->setGivenAnswer(theSimpleQuestion->getCorrectAnswer());
+
+	what = "isAnswered";
+	if (aQuestion->isAnswered() != true)
+	{
+		std::cout << "NOT CORRECT 4: testing " << what << ", expected true, but got false" << std::endl;
+		return false;
+	}
+	what = "isCorrect";
+	if (aQuestion->isCorrect() != true)
+	{
+		std::cout << "NOT CORRECT 5: testing " << what << ", expected true, but got false" << std::endl;
+		return false;
+	}
+	what = "getGivenAnswer";
+	expected = aQuestion->getCorrectAnswer();
+	if (aQuestion->getGivenAnswer() != expected)
+	{
+		std::cout << "NOT CORRECT 6: testing " << what << ", expected " << expected
+			<< ", but got " << aQuestion->getGivenAnswer() << std::endl;
+		return false;
+	}
+
+	// Set wrong answer
+	string wrongAnswer = theSimpleQuestion->getCorrectAnswer() + "----";
+	theSimpleQuestion->setGivenAnswer(wrongAnswer);
+
+	what = "isAnswered";
+	if (aQuestion->isAnswered() != true)
+	{
+		std::cout << "NOT CORRECT 7: testing " << what << ", expected true, but got false" << std::endl;
+		return false;
+	}
+	what = "isCorrect";
+	if (aQuestion->isCorrect() != false)
+	{
+		std::cout << "NOT CORRECT 8: testing " << what << ", expected false, but got true" << std::endl;
+		return false;
+	}
+	what = "getGivenAnswer";
+	expected = wrongAnswer;
+	if (aQuestion->getGivenAnswer() != expected)
+	{
+		std::cout << "NOT CORRECT 9: testing " << what << ", expected " << expected
+			<< ", but got " << aQuestion->getGivenAnswer() << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestingSimpleQuestionInheritance()" << std::endl;
+	delete aQuestion;
+	return true;
+}
+
+bool TestingTrueFalseQuestionInheritance()
+{
+	std::cout << std::endl << "Starting TestingTrueFalseQuestionInheritance()" << std::endl;
+	std::cout << "  Testing using base class pointers and various functionality." << std::endl;
+
+	Question* aQuestion = new TrueFalseQuestion("TrueFalseQuestion", true);
+
+	string what = "isAnswered";
+	if (aQuestion->isAnswered() != false)
+	{
+		std::cout << "NOT CORRECT 1: testing " << what << ", expected false, but got true" << std::endl;
+		return false;
+	}
+	what = "isCorrect";
+	if (aQuestion->isCorrect() != false)
+	{
+		std::cout << "NOT CORRECT 2: testing " << what << ", expected false, but got true" << std::endl;
+		return false;
+	}
+	what = "getGivenAnswer";
+	string expected = "";
+	if (aQuestion->getGivenAnswer() != expected)
+	{
+		std::cout << "NOT CORRECT 3: testing " << what << ", expected " << expected
+			<< ", but got " << aQuestion->getGivenAnswer() << std::endl;
+		return false;
+	}
+
+	// Set correct answer
+	TrueFalseQuestion* theTrueFalseQuestion = dynamic_cast<TrueFalseQuestion*>(aQuestion);
+	theTrueFalseQuestion->setGivenAnswer(true);
+
+	what = "isAnswered";
+	if (aQuestion->isAnswered() != true)
+	{
+		std::cout << "NOT CORRECT 4: testing " << what << ", expected true, but got false" << std::endl;
+		return false;
+	}
+	what = "isCorrect";
+	if (aQuestion->isCorrect() != true)
+	{
+		std::cout << "NOT CORRECT 5: testing " << what << ", expected true, but got false" << std::endl;
+		return false;
+	}
+	what = "getGivenAnswer";
+	expected = aQuestion->getCorrectAnswer();
+	if (aQuestion->getGivenAnswer() != "True" && aQuestion->getGivenAnswer() != "Sant")
+	{
+		std::cout << "NOT CORRECT 6: testing " << what << ", expected \"True\" or \"Sant\" but got "
+			<< aQuestion->getGivenAnswer() << std::endl;
+		return false;
+	}
+
+	// Set wrong answer
+	theTrueFalseQuestion->setGivenAnswer(false);
+
+	what = "isAnswered";
+	if (aQuestion->isAnswered() != true)
+	{
+		std::cout << "NOT CORRECT 7: testing " << what << ", expected true, but got false" << std::endl;
+		return false;
+	}
+	what = "isCorrect";
+	if (aQuestion->isCorrect() != false)
+	{
+		std::cout << "NOT CORRECT 8: testing " << what << ", expected false, but got true" << std::endl;
+		return false;
+	}
+	what = "getGivenAnswer";
+	if (aQuestion->getGivenAnswer() != "False" && aQuestion->getGivenAnswer() != "Falskt")
+	{
+		std::cout << "NOT CORRECT 9: testing " << what << ", expected \"False\" or \"Falskt\" but got "
+			<< aQuestion->getGivenAnswer() << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestingTrueFalseQuestionInheritance()" << std::endl;
+	delete aQuestion;
+	return true;
+}
+
+bool runSingleTests(const std::string& argument)
+{
+	if (argument == "initSimple")
+		return TestingSimpleQuestionInitial();
+	if (argument == "simpleValues")
+		return TestingSimpleQuestionValues();
+	if (argument == "initTrueFalse")
+		return TestingTrueFalseQuestionInitial();
+	if (argument == "trueFalseValues")
+		return TestingTrueFalseQuestionValues();
+	if (argument == "simpleInheritance")
+		return TestingSimpleQuestionInheritance();
+	if (argument == "trueFalseInheritance")
+		return TestingTrueFalseQuestionInheritance();
+	return false;
+}
+
+int main(int argc, char const* argv[])
+{
+	// Kod häremellan är för codegrade, kommer ej att köras på er lokala dator
+#if defined(_WIN32) || defined(_WIN64)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+	if (argc > 1)
+	{
+		std::string argument(argv[1]);
+		if (runSingleTests(argument))
+			return 0;
+		return 1;
+	}
+	// slut på codegrade kod
+	if (!TestingSimpleQuestionInitial())
+	{
+		std::cout << "Not OK: TestingSimpleQuestionInitial()" << std::endl;
+		return 1;
+	}
+	if (!TestingSimpleQuestionValues())
+	{
+		std::cout << "Not OK: TestingSimpleQuestionValues()" << std::endl;
+		return 2;
+	}
+	if (!TestingTrueFalseQuestionInitial())
+	{
+		std::cout << "Not OK: TestingTrueFalseQuestionInitial()" << std::endl;
+		return 3;
+	}
+	if (!TestingTrueFalseQuestionValues())
+	{
+		std::cout << "Not OK: TestingTrueFalseQuestionValues()" << std::endl;
+		return 4;
+	}
+	if (!TestingSimpleQuestionInheritance())
+	{
+		std::cout << "Not OK: TestingSimpleQuestionInheritance()" << std::endl;
+		return 5;
+	}
+	if (!TestingTrueFalseQuestionInheritance())
+	{
+		std::cout << "Not OK: TestingTrueFalseQuestionInheritance()" << std::endl;
+		return 6;
+	}
+	std::cout << std::endl << "Remember to check for memory leaks in the output!" << std::endl;
+	return 0;
+}

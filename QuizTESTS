@@ -1,0 +1,754 @@
+#include "Quiz.h"
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void AddQuestions(Quiz& aQuiz, int nrOf = 12) // even nrOf
+{
+	for (int i = 0; i < nrOf / 2; ++i)
+	{
+		aQuiz.addSimpleQuestion("SimpleQuestion" + to_string(i), "Answer");
+		aQuiz.addTrueFalseQuestion("TrueFalseQuestion" + to_string(i), true);
+	}
+}
+
+bool TestCreateQuiz()
+{
+	std::cout << std::endl << "Starting TestCreateQuiz()" << std::endl;
+	std::cout << "  Testing default and overloaded constructor, and setters and getters" << std::endl;
+
+	Quiz aQuiz;
+
+	std::string expectedName = "";
+
+	aQuiz.setName(expectedName);
+	if (aQuiz.getName() != expectedName)
+	{
+		std::cout << "NOT CORRECT 1: expected " << expectedName << " as name, but got " << aQuiz.getName() << std::endl;
+		return false;
+	}
+	if (aQuiz.getNrOfQuestions() != 0)
+	{
+		std::cout << "NOT CORRECT 2: expected 0 nr of questions, but got " << aQuiz.getNrOfQuestions() << std::endl;
+		return false;
+	}
+
+	expectedName = "Måndagsquiz";
+	aQuiz.setName(expectedName);
+	if (aQuiz.getName() != expectedName)
+	{
+		std::cout << "NOT CORRECT 3: expected " << expectedName << " as name, but got " << aQuiz.getName() << std::endl;
+		return false;
+	}
+
+	expectedName = "Tisdagsquiz";
+	Quiz secondQuiz(expectedName);
+
+	if (secondQuiz.getName() != expectedName)
+	{
+		std::cout << "NOT CORRECT 4: expected " << expectedName << " as name, but got " << secondQuiz.getName() << std::endl;
+		return false;
+	}
+	if (secondQuiz.getNrOfQuestions() != 0)
+	{
+		std::cout << "NOT CORRECT 5: expected 0 nr of questions, but got " << secondQuiz.getNrOfQuestions() << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestCreateQuiz()" << std::endl;
+	return true;
+}
+
+bool TestAddSimpleQuestion()
+{
+	std::cout << std::endl << "Starting TestAddSimpleQuestion()" << std::endl;
+	std::cout << "  Using addSimpleQuestion, getQuestionAt, and getNrOfQuestions." << std::endl;
+	Quiz aQuiz;
+
+	aQuiz.addSimpleQuestion("Question1", "Answer1");
+	int expectedNrOfQuestions = 1;
+	if (aQuiz.getNrOfQuestions() != expectedNrOfQuestions)
+	{
+		std::cout << "NOT CORRECT 1: expected getNrOfQuestions() to return " << expectedNrOfQuestions
+			<< ", but got " << aQuiz.getNrOfQuestions() << std::endl;
+		return false;
+	}
+	Question* toCheck = aQuiz.getQuestionAt(0);
+	if (toCheck == nullptr ||
+		toCheck->getQuestion() != "Question1" ||
+		toCheck->getCorrectAnswer() != "Answer1")
+	{
+		std::cout << "NOT CORRECT 2: The simple question was not added correctly to the index." << std::endl;
+		return false;
+	}
+
+	aQuiz.addSimpleQuestion("Question2", "Answer2");
+	expectedNrOfQuestions = 2;
+	if (aQuiz.getNrOfQuestions() != expectedNrOfQuestions)
+	{
+		std::cout << "NOT CORRECT 3: expected getNrOfQuestions() to return " << expectedNrOfQuestions
+			<< ", but got " << aQuiz.getNrOfQuestions() << std::endl;
+		return false;
+	}
+	toCheck = aQuiz.getQuestionAt(1);
+	if (toCheck == nullptr ||
+		toCheck->getQuestion() != "Question2" ||
+		toCheck->getCorrectAnswer() != "Answer2")
+	{
+		std::cout << "NOT CORRECT 4: The simple question was not added correctly to the index." << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestAddSimpleQuestion()" << std::endl;
+	return true;
+}
+
+bool TestAddTrueFalseQuestion()
+{
+	std::cout << std::endl << "Starting TestAddTrueFalseQuestion()" << std::endl;
+	std::cout << "  Using addTrueFalseQuestion, getQuestionAt, and getNrOfQuestions." << std::endl;
+	Quiz aQuiz;
+
+	aQuiz.addTrueFalseQuestion("Question1", true);
+	int expectedNrOfQuestions = 1;
+	if (aQuiz.getNrOfQuestions() != expectedNrOfQuestions)
+	{
+		std::cout << "NOT CORRECT 1: expected getNrOfQuestions() to return " << expectedNrOfQuestions
+			<< ", but got " << aQuiz.getNrOfQuestions() << std::endl;
+		return false;
+	}
+	Question* toCheck = aQuiz.getQuestionAt(0);
+	if (toCheck == nullptr ||
+		toCheck->getQuestion() != "Question1" ||
+		(toCheck->getCorrectAnswer() != "True" && toCheck->getCorrectAnswer() != "Sant"))
+	{
+		std::cout << "NOT CORRECT 2: The simple question was not added correctly to the index." << std::endl;
+		return false;
+	}
+
+	aQuiz.addTrueFalseQuestion("Question2", false);
+	expectedNrOfQuestions = 2;
+	if (aQuiz.getNrOfQuestions() != expectedNrOfQuestions)
+	{
+		std::cout << "NOT CORRECT 3: expected getNrOfQuestions() to return " << expectedNrOfQuestions
+			<< ", but got " << aQuiz.getNrOfQuestions() << std::endl;
+		return false;
+	}
+	toCheck = aQuiz.getQuestionAt(1);
+	if (toCheck == nullptr ||
+		toCheck->getQuestion() != "Question2" ||
+		(toCheck->getCorrectAnswer() != "False" && toCheck->getCorrectAnswer() != "Falskt"))
+	{
+		std::cout << "NOT CORRECT 4: The simple question was not added correctly to the index." << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestAddTrueFalseQuestion()" << std::endl;
+	return true;
+}
+
+bool TestMixedQuestions()
+{
+	std::cout << std::endl << "Starting TestMixedQuestions()" << std::endl;
+	std::cout << "  Using addSimpleQuestion, addTrueFalseQuestion, getNrOfQuestions, and getQuestionAt." << std::endl;
+
+	Quiz aQuiz;
+	aQuiz.addTrueFalseQuestion("Question1", true);
+	aQuiz.addSimpleQuestion("Question2", "Answer2");
+	aQuiz.addTrueFalseQuestion("Question3", false);
+	aQuiz.addSimpleQuestion("Question4", "Answer4");
+
+	if (aQuiz.getNrOfQuestions() != 4)
+	{
+		std::cout << "NOT CORRECT 1: expected getNrOfQuestions() to return 4" << std::endl;
+		return false;
+	}
+
+	std::string questions[4] = { "Question1", "Question2", "Question3", "Question4" };
+	for (int i = 0; i < 4; ++i)
+	{
+		Question* questionPtr = aQuiz.getQuestionAt(i);
+		if (questionPtr == nullptr)
+		{
+			std::cout << "NOT CORRECT 2: expected getSkiierAt(" << i << ") to not return nullptr" << std::endl;
+			return false;
+		}
+		if (questionPtr->getQuestion() != questions[i])
+		{
+			std::cout << "NOT CORRECT 3: expected name to be " << questions[i] << " but is " << questionPtr->getQuestion() << std::endl;
+			return false;
+		}
+	}
+
+	std::cout << "OK: TestMixedQuestions()" << std::endl;
+	return true;
+}
+
+bool TestAddManyToExpand()
+{
+	std::cout << std::endl << "Starting TestAddManyToExpand()" << std::endl;
+	std::cout << "  Using addSimpleQuestion, addTrueFalseQuestion, getNrOfQuestions." << std::endl;
+
+	Quiz aQuiz;
+
+	for (int i = 0; i < 100; ++i)
+	{
+		aQuiz.addSimpleQuestion("SimpleQuestion" + i, "Answer");
+		aQuiz.addTrueFalseQuestion("TrueFalseQuestion" + i, true);
+	}
+
+	if (aQuiz.getNrOfQuestions() != 200)
+	{
+		std::cout << "NOT CORRECT 1: Should be 200 questions in the quiz, but is " << aQuiz.getNrOfQuestions() << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestAddManyToExpand()" << std::endl;
+	return true;
+}
+
+bool TestMoveUp()
+{
+	std::cout << std::endl << "Starting TestMoveUp()" << std::endl;
+	std::cout << "  Using addSimpleQuestion, addTrueFalseQuestion, getNrOfQuestions, moveUp and getQuestionAt." << std::endl;
+
+	Quiz aQuiz;
+	aQuiz.addSimpleQuestion("Question1", "Answer1");
+	aQuiz.addTrueFalseQuestion("Question2", true);
+	aQuiz.addSimpleQuestion("Question3", "Answer3");
+	aQuiz.addTrueFalseQuestion("Question4", false);
+
+	Question* questionToMove = aQuiz.getQuestionAt(2);
+	Question* questionToReplace = aQuiz.getQuestionAt(1);
+
+	bool wasMoved = aQuiz.moveUp(2);
+	if (!wasMoved)
+	{
+		std::cout << "NOT CORRECT 1: Wanted to move up question 2 but returned false" << std::endl;
+		return false;
+	}
+
+	Question* movedQuestion = aQuiz.getQuestionAt(1);
+	Question* replacedQuestion = aQuiz.getQuestionAt(2);
+
+	if (movedQuestion != questionToMove || replacedQuestion != questionToReplace)
+	{
+		std::cout << "NOT CORRECT 2: Wanted to move up question 2 but questions are now in some wrong order." << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestMoveUp()" << std::endl;
+	return true;
+}
+
+bool TestMoveDown()
+{
+	std::cout << std::endl << "Starting TestMoveDown()" << std::endl;
+	std::cout << "  Using addSimpleQuestion, addTrueFalseQuestion, getNrOfQuestions, moveDown and getQuestionAt." << std::endl;
+
+	Quiz aQuiz;
+	aQuiz.addSimpleQuestion("Question1", "Answer1");
+	aQuiz.addTrueFalseQuestion("Question2", true);
+	aQuiz.addSimpleQuestion("Question3", "Answer3");
+	aQuiz.addTrueFalseQuestion("Question4", false);
+
+	Question* questionToMove = aQuiz.getQuestionAt(1);
+	Question* questionToReplace = aQuiz.getQuestionAt(2);
+
+	bool wasMoved = aQuiz.moveDown(1);
+	if (!wasMoved)
+	{
+		std::cout << "NOT CORRECT 1: Wanted to move down question 1 but returned false" << std::endl;
+		return false;
+	}
+
+	Question* movedQuestion = aQuiz.getQuestionAt(2);
+	Question* replacedQuestion = aQuiz.getQuestionAt(1);
+
+	if (movedQuestion != questionToMove || replacedQuestion != questionToReplace)
+	{
+		std::cout << "NOT CORRECT 2: Wanted to move down question 1 but questions are now in some wrong order." << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestMoveDown()" << std::endl;
+	return true;
+}
+
+bool TestRemoveQuestion()
+{
+	std::cout << std::endl << "Starting TestRemoveQuestion()" << std::endl;
+	std::cout << "  Using addSimpleQuestion, addTrueFalseQuestion, getNrOfQuestions, getQuestionAt and removeQuestion." << std::endl;
+
+	Quiz aQuiz;
+	AddQuestions(aQuiz, 6);
+
+	vector<Question*> questionsBeforeRemove;
+	for (int i = 0; i < aQuiz.getNrOfQuestions(); i++) {
+		questionsBeforeRemove.push_back(aQuiz.getQuestionAt(i));
+	}
+
+	bool removed = aQuiz.removeQuestion(2);
+	questionsBeforeRemove.erase(questionsBeforeRemove.begin() + 2);
+
+	if (removed != true)
+	{
+		std::cout << "NOT CORRECT 1: expected removeQuestion to return true when removing existing question, but returned false" << std::endl;
+		return false;
+	}
+	if (aQuiz.getNrOfQuestions() != 5)
+	{
+		std::cout << "NOT CORRECT 2: expected number of questions to be 5 after removing question nr 2, but is " << aQuiz.getNrOfQuestions() << std::endl;
+		return false;
+	}
+
+	for (int i = 0; i < aQuiz.getNrOfQuestions(); i++) {
+		if (aQuiz.getQuestionAt(i) != questionsBeforeRemove[i]) {
+			std::cout << "NOT CORRECT 3: expected remaining questions to be in same order after remove, but was not. Question " << i
+				<< " differs." << std::endl;
+			cout << "---Expected order after remove:---" << endl;
+			for (Question* q : questionsBeforeRemove) {
+				cout << q->getQuestion() << endl;
+			}
+			cout << "\n---Actual order after remove:---" << endl;
+			for (int i = 0; i < aQuiz.getNrOfQuestions(); i++) {
+				cout << aQuiz.getQuestionAt(i)->getQuestion() << endl;
+			}
+			return false;
+
+		}
+	}
+
+	removed = aQuiz.removeQuestion(100);
+	if (removed == true)
+	{
+		std::cout << "NOT CORRECT 4: expected removeQuestion to return false when trying to remove non-existing question, but returned true" << std::endl;
+		return false;
+	}
+
+	std::cout << "OK: TestRemoveQuestion()" << std::endl;
+	return true;
+}
+
+bool TestListQuestionsFunctions()
+{
+	std::cout << std::endl << "Starting TestListQuestionsFunctions()" << std::endl;
+	std::cout << "  Using addSimpleQuestion, addTrueFalseQuestion, getNrOfQuestions, getQuestionAt, listQuestions, listQuestionsAndCorrectAnswers, listSimpleQuestions." << std::endl;
+
+	Quiz aQuiz;
+	aQuiz.addSimpleQuestion("Question1", "Answer1");
+	aQuiz.addTrueFalseQuestion("Question2", true);
+	aQuiz.addSimpleQuestion("Question3", "Answer3");
+	aQuiz.addTrueFalseQuestion("Question4", false);
+
+
+	std::vector<std::string> trueQuestions;
+	trueQuestions.push_back(aQuiz.getQuestionAt(0)->getQuestion());
+	trueQuestions.push_back(aQuiz.getQuestionAt(1)->getQuestion());
+	trueQuestions.push_back(aQuiz.getQuestionAt(2)->getQuestion());
+	trueQuestions.push_back(aQuiz.getQuestionAt(3)->getQuestion());
+
+	std::vector<std::string> trueAnswers;
+	trueAnswers.push_back(aQuiz.getQuestionAt(0)->getCorrectAnswer());
+	trueAnswers.push_back(aQuiz.getQuestionAt(1)->getCorrectAnswer());
+	trueAnswers.push_back(aQuiz.getQuestionAt(2)->getCorrectAnswer());
+	trueAnswers.push_back(aQuiz.getQuestionAt(3)->getCorrectAnswer());
+
+	std::string questions = aQuiz.listQuestions();
+	for (auto trueQuestion : trueQuestions)
+	{
+		if (questions.find(trueQuestion) == std::string::npos)
+		{
+			std::cout << "NOT CORRECT 1: listQuestions() did not include all question descriptions" << std::endl;
+			std::cout << "Got following questions" << std::endl << questions << std::endl;
+			std::cout << "Wanted to find following description" << std::endl << trueQuestion << std::endl;
+			return false;
+		}
+	}
+
+	std::string questionsAndAnswers = aQuiz.listQuestionsAndCorrectAnswers();
+	for (auto trueQuestion : trueQuestions)
+	{
+		if (questionsAndAnswers.find(trueQuestion) == std::string::npos)
+		{
+			std::cout << "NOT CORRECT 2: listQuestions() did not include all question descriptions" << std::endl;
+			std::cout << "Got following questionsAndAnswers" << std::endl << questionsAndAnswers << std::endl;
+			std::cout << "Wanted to find following questiondescription" << std::endl << trueQuestion << std::endl;
+			return false;
+		}
+	}
+	for (auto trueAnswer : trueAnswers)
+	{
+		if (questionsAndAnswers.find(trueAnswer) == std::string::npos)
+		{
+			std::cout << "NOT CORRECT 3: listQuestionsAndCorrectAnswers() did not include all answer descriptions" << std::endl;
+			std::cout << "Got following questionsAndAnswers" << std::endl << questionsAndAnswers << std::endl;
+			std::cout << "Wanted to find following answer description" << std::endl << trueAnswer << std::endl;
+			return false;
+		}
+	}
+
+	std::cout << "OK: TestListQuestionsFunctions()" << std::endl;
+	return true;
+}
+
+bool TestListSimpleQuestions()
+{
+	std::cout << std::endl << "Starting TestListSimpleQuestions()" << std::endl;
+	std::cout << "  Using addSimpleQuestion, addTrueFalseQuestion, getNrOfQuestions, getQuestionAt, listSimpleQuestions." << std::endl;
+
+	Quiz aQuiz;
+	aQuiz.addSimpleQuestion("Question1", "Answer1");
+	aQuiz.addTrueFalseQuestion("Question2", true);
+	aQuiz.addSimpleQuestion("Question3", "Answer3");
+	aQuiz.addTrueFalseQuestion("Question4", false);
+
+	std::vector<std::string> trueSimpleQuestions;
+	trueSimpleQuestions.push_back(aQuiz.getQuestionAt(0)->getQuestion());
+	trueSimpleQuestions.push_back(aQuiz.getQuestionAt(2)->getQuestion());
+
+
+	std::string simpleQuestions = aQuiz.listSimpleQuestions();
+	for (auto trueSimpleQuestion : trueSimpleQuestions)
+	{
+		if (simpleQuestions.find(trueSimpleQuestion) == std::string::npos)
+		{
+			std::cout << "NOT CORRECT 1: listSimpleQuestions() did not include all simple question descriptions" << std::endl;
+			std::cout << "Got following simpleQuestions" << std::endl << simpleQuestions << std::endl;
+			std::cout << "Wanted to find following simple question description" << std::endl << trueSimpleQuestion << std::endl;
+			return false;
+		}
+	}
+
+	std::cout << "OK: TestListSimpleQuestions()" << std::endl;
+	return true;
+}
+
+
+bool TestCopyConstructor()
+{
+	std::cout << std::endl << "Starting TestCopyConstructor()" << std::endl;
+	std::cout << "  Using addSimpleQuestion, addTrueFalseQuestion, getNrOfQuestions, getQuestionAt and copy constructor." << std::endl;
+
+	{
+		Quiz quiz1("QUIZ-1");
+		Quiz quiz2 = quiz1;
+
+		if (quiz2.getName() != quiz1.getName())
+		{
+			std::cout << "NOT CORRECT 1: expected " << quiz1.getName() << ", but got " << quiz2.getName() << std::endl;
+			return false;
+		}
+		if (quiz2.getNrOfQuestions() != 0)
+		{
+			std::cout << "NOT CORRECT 2: expected 0 nr of questions, but got " << quiz2.getNrOfQuestions() << std::endl;
+		}
+	}
+	{
+		Quiz quiz1("QUIZ-1");
+		quiz1.addSimpleQuestion("Question1", "Answer1");
+		quiz1.addTrueFalseQuestion("Question2", true);
+
+		Quiz quiz2(quiz1);
+
+		if (quiz1.getQuestionAt(0) == quiz2.getQuestionAt(0) ||
+			quiz1.getQuestionAt(0) == quiz2.getQuestionAt(1) ||
+			quiz1.getQuestionAt(1) == quiz2.getQuestionAt(0) ||
+			quiz1.getQuestionAt(1) == quiz2.getQuestionAt(1))
+		{
+			std::cout << "NOT CORRECT 3: expected different addresses but got the same address " << std::endl;
+			return false;
+		}
+
+		Question* v1 = quiz1.getQuestionAt(0);
+		Question* v2 = quiz2.getQuestionAt(0);
+		if (v1->getQuestion() != v2->getQuestion())
+		{
+			std::cout << "NOT CORRECT 4: copied question does not match original question." << std::endl;
+			std::cout << "Here is the question of copied: " << v2->getQuestion() << std::endl;
+			std::cout << "Question of original object is: " << v1->getQuestion() << std::endl;
+			return false;
+		}
+		if (v1->getCorrectAnswer() != v2->getCorrectAnswer())
+		{
+			std::cout << "NOT CORRECT 5: copied questions answer does not match original question." << std::endl;
+			std::cout << "Here is the answer of copied: " << v2->getCorrectAnswer() << std::endl;
+			std::cout << "Answer of original object is: " << v1->getCorrectAnswer() << std::endl;
+			return false;
+		}
+
+		v1 = quiz1.getQuestionAt(1);
+		v2 = quiz2.getQuestionAt(1);
+		if (v1->getQuestion() != v2->getQuestion())
+		{
+			std::cout << "NOT CORRECT 6: copied question does not match original question." << std::endl;
+			std::cout << "Here is the question of copied: " << v2->getQuestion() << std::endl;
+			std::cout << "Question of original object is: " << v1->getQuestion() << std::endl;
+			return false;
+		}
+		if (v1->getCorrectAnswer() != v2->getCorrectAnswer())
+		{
+			std::cout << "NOT CORRECT 7: copied questions answer does not match original question." << std::endl;
+			std::cout << "Here is the answer of copied: " << v2->getCorrectAnswer() << std::endl;
+			std::cout << "Answer of original object is: " << v1->getCorrectAnswer() << std::endl;
+			return false;
+		}
+
+	}
+
+	std::cout << "OK: TestCopyConstructor()" << std::endl;
+	return true;
+}
+
+bool TestAssignmentOperator()
+{
+	std::cout << std::endl << "Starting TestAssignmentOperator()" << std::endl;
+	std::cout << "  Using addSimpleQuestion, addTrueFalseQuestion, getNrOfQuestions, getQuestionAt and assignment operator." << std::endl;
+
+	{	// Empty assigned to empty
+		Quiz quiz1("Quiz-1");
+		Quiz quiz2("Quiz-2");
+		quiz2 = quiz1;
+
+		if (quiz2.getName() != quiz1.getName())
+		{
+			std::cout << "NOT CORRECT 1: expected " << quiz1.getName() << ", but got " << quiz2.getName() << std::endl;
+			return false;
+		}
+		if (quiz2.getNrOfQuestions() != 0)
+		{
+			std::cout << "NOT CORRECT 2: expected 0 nr of questions, but got " << quiz2.getNrOfQuestions() << std::endl;
+		}
+	}
+	{	 // Empty assigned to non-empty
+		Quiz quiz1("Quiz-1");
+		quiz1.addSimpleQuestion("Question1", "Answer1");
+		quiz1.addTrueFalseQuestion("Question2", true);
+		Quiz quiz2;
+		quiz2 = quiz1;
+
+		if (quiz1.getQuestionAt(0) == quiz2.getQuestionAt(0) ||
+			quiz1.getQuestionAt(0) == quiz2.getQuestionAt(1) ||
+			quiz1.getQuestionAt(1) == quiz2.getQuestionAt(0) ||
+			quiz1.getQuestionAt(1) == quiz2.getQuestionAt(1))
+		{
+			std::cout << "NOT CORRECT 3: expected different addresses but got the same address " << std::endl;
+			return false;
+		}
+		Question* v1 = quiz1.getQuestionAt(0);
+		Question* v2 = quiz2.getQuestionAt(0);
+		if (v1->getQuestion() != v2->getQuestion())
+		{
+			std::cout << "NOT CORRECT 4: copied question does not match original question." << std::endl;
+			std::cout << "Here is the question of copied: " << v2->getQuestion() << std::endl;
+			std::cout << "Question of original object is: " << v1->getQuestion() << std::endl;
+			return false;
+		}
+		if (v1->getCorrectAnswer() != v2->getCorrectAnswer())
+		{
+			std::cout << "NOT CORRECT 5: copied questions answer does not match original question." << std::endl;
+			std::cout << "Here is the answer of copied: " << v2->getCorrectAnswer() << std::endl;
+			std::cout << "Answer of original object is: " << v1->getCorrectAnswer() << std::endl;
+			return false;
+		}
+
+		v1 = quiz1.getQuestionAt(1);
+		v2 = quiz2.getQuestionAt(1);
+		if (v1->getQuestion() != v2->getQuestion())
+		{
+			std::cout << "NOT CORRECT 6: copied question does not match original question." << std::endl;
+			std::cout << "Here is the question of copied: " << v2->getQuestion() << std::endl;
+			std::cout << "Question of original object is: " << v1->getQuestion() << std::endl;
+			return false;
+		}
+		if (v1->getCorrectAnswer() != v2->getCorrectAnswer())
+		{
+			std::cout << "NOT CORRECT 7: copied questions answer does not match original question." << std::endl;
+			std::cout << "Here is the answer of copied: " << v2->getCorrectAnswer() << std::endl;
+			std::cout << "Answer of original object is: " << v1->getCorrectAnswer() << std::endl;
+			return false;
+		}
+
+	}
+	{	// non-empty assigned to empty
+		Quiz quiz1("Quiz-1");
+		quiz1.addSimpleQuestion("Question1", "Answer1");
+		quiz1.addTrueFalseQuestion("Question2", true);
+		Quiz quiz2;
+		quiz1 = quiz2;
+
+		if (quiz2.getName() != quiz1.getName())
+		{
+			std::cout << "NOT CORRECT 8: expected " << quiz1.getName() << ", but got " << quiz2.getName() << std::endl;
+			return false;
+		}
+		if (quiz1.getNrOfQuestions() != 0)
+		{
+			std::cout << "NOT CORRECT 9: expected 0 nr of questions, but got " << quiz1.getNrOfQuestions() << std::endl;
+		}
+	}
+	{	// Non-empty assigned to non-empty
+		Quiz quiz1("Quiz-1");
+		quiz1.addSimpleQuestion("Question1", "Answer1");
+		quiz1.addTrueFalseQuestion("Question2", true);
+		Quiz quiz2;
+		quiz2.addSimpleQuestion("Question3", "Answer3");
+		quiz2.addTrueFalseQuestion("Question4", false);
+		quiz2 = quiz1;
+
+		if (quiz1.getQuestionAt(0) == quiz2.getQuestionAt(0) ||
+			quiz1.getQuestionAt(0) == quiz2.getQuestionAt(1) ||
+			quiz1.getQuestionAt(1) == quiz2.getQuestionAt(0) ||
+			quiz1.getQuestionAt(1) == quiz2.getQuestionAt(1))
+		{
+			std::cout << "NOT CORRECT 10: expected different addresses but got the same address " << std::endl;
+			return false;
+		}
+		Question* v1 = quiz1.getQuestionAt(0);
+		Question* v2 = quiz2.getQuestionAt(0);
+		if (v1->getQuestion() != v2->getQuestion())
+		{
+			std::cout << "NOT CORRECT 11: copied question does not match original question." << std::endl;
+			std::cout << "Here is the question of copied: " << v2->getQuestion() << std::endl;
+			std::cout << "Question of original object is: " << v1->getQuestion() << std::endl;
+			return false;
+		}
+		if (v1->getCorrectAnswer() != v2->getCorrectAnswer())
+		{
+			std::cout << "NOT CORRECT 12: copied questions answer does not match original question." << std::endl;
+			std::cout << "Here is the answer of copied: " << v2->getCorrectAnswer() << std::endl;
+			std::cout << "Answer of original object is: " << v1->getCorrectAnswer() << std::endl;
+			return false;
+		}
+
+		v1 = quiz1.getQuestionAt(1);
+		v2 = quiz2.getQuestionAt(1);
+		if (v1->getQuestion() != v2->getQuestion())
+		{
+			std::cout << "NOT CORRECT 13: copied question does not match original question." << std::endl;
+			std::cout << "Here is the question of copied: " << v2->getQuestion() << std::endl;
+			std::cout << "Question of original object is: " << v1->getQuestion() << std::endl;
+			return false;
+		}
+		if (v1->getCorrectAnswer() != v2->getCorrectAnswer())
+		{
+			std::cout << "NOT CORRECT 14: copied questions answer does not match original question." << std::endl;
+			std::cout << "Here is the answer of copied: " << v2->getCorrectAnswer() << std::endl;
+			std::cout << "Answer of original object is: " << v1->getCorrectAnswer() << std::endl;
+			return false;
+		}
+	}
+
+	std::cout << "OK: TestAssignmentOperator()" << std::endl;
+	return true;
+}
+
+
+bool runSingleTests(const std::string& argument)
+{
+	if (argument == "create")
+		return TestCreateQuiz();
+	if (argument == "addSimple")
+		return TestAddSimpleQuestion();
+	if (argument == "addTrueFalse")
+		return TestAddTrueFalseQuestion();
+	if (argument == "addMixed")
+		return TestMixedQuestions();
+	if (argument == "addMany")
+		return TestAddManyToExpand();
+	if (argument == "removeQuestion")
+		return TestRemoveQuestion();
+	if (argument == "listQuestions")
+		return TestListQuestionsFunctions();
+	if (argument == "listSimpleQuestions")
+		return TestListSimpleQuestions();
+	if (argument == "moveUp")
+		return TestMoveUp();
+	if (argument == "moveDown")
+		return TestMoveDown();
+	if (argument == "copy")
+		return TestCopyConstructor();
+	if (argument == "assignment")
+		return TestAssignmentOperator();
+	return false;
+}
+
+int main(int argc, char const* argv[])
+{
+	// Kod häremellan är för codegrade, kommer ej att köras på er lokala dator
+#if defined(_WIN32) || defined(_WIN64)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+	if (argc > 1)
+	{
+		std::string argument(argv[1]);
+		if (runSingleTests(argument))
+			return 0;
+		return 1;
+	}
+	// slut på codegrade kod
+
+	if (TestCreateQuiz() == false)
+	{
+		std::cout << "NOT OK: TestCreateQuiz()" << std::endl;
+		return 1;
+	}
+	if (TestAddSimpleQuestion() == false)
+	{
+		std::cout << "NOT OK: TestAddSimpleQuestion()" << std::endl;
+		return 2;
+	}
+	if (TestAddTrueFalseQuestion() == false)
+	{
+		std::cout << "NOT OK: TestAddTrueFalseQuestion()" << std::endl;
+		return 3;
+	}
+	if (TestMixedQuestions() == false)
+	{
+		std::cout << "NOT OK: TestMixedQuestions()" << std::endl;
+		return 4;
+	}
+	if (TestAddManyToExpand() == false)
+	{
+		std::cout << "NOT OK: TestAddManyToExpand()" << std::endl;
+		return 5;
+	}
+	if (TestRemoveQuestion() == false)
+	{
+		std::cout << "NOT OK: TestRemoveQuestion()" << std::endl;
+		return 6;
+	}
+	if (TestListQuestionsFunctions() == false)
+	{
+		std::cout << "NOT OK: TestListQuestionsFunctions()" << std::endl;
+		return 7;
+	}
+	if (TestListSimpleQuestions() == false)
+	{
+		std::cout << "NOT OK: TestListSimpleQuestions()" << std::endl;
+		return 8;
+	}
+	if (TestMoveUp() == false)
+	{
+		std::cout << "NOT OK: TestMoveUp()" << std::endl;
+		return 9;
+	}
+	if (TestMoveDown() == false)
+	{
+		std::cout << "NOT OK: TestMoveDown()" << std::endl;
+		return 10;
+	}
+	if (TestCopyConstructor() == false)
+	{
+		std::cout << "NOT OK: TestCopyConstructor()" << std::endl;
+		return 11;
+	}
+	if (TestAssignmentOperator() == false)
+	{
+		std::cout << "NOT OK: TestAssignmentOperator()" << std::endl;
+		return 12;
+	}
+	return 0;
+}
